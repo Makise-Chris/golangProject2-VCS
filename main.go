@@ -188,8 +188,10 @@ func InitializeRoute() {
 	router.HandleFunc("/signin", SignInPage).Methods("GET")
 	router.HandleFunc("/signup", SignUp).Methods("POST")
 	router.HandleFunc("/signin", SignIn).Methods("POST")
+	router.HandleFunc("/admin/signout", IsAuthorized(SignOut)).Methods("POST")
 	router.HandleFunc("/admin/delete/{ID}", IsAuthorized(DeleteUser)).Methods("POST")
 	router.HandleFunc("/admin", IsAuthorized(AdminIndex)).Methods("GET")
+	router.HandleFunc("/user/signout", IsAuthorized(SignOut)).Methods("POST")
 	router.HandleFunc("/user", IsAuthorized(UserIndex)).Methods("GET")
 	router.HandleFunc("/", Index).Methods("GET")
 }
@@ -373,6 +375,11 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 	connection.Delete(&User2{}, userId)
 
 	http.Redirect(w, r, "/admin", http.StatusSeeOther)
+}
+
+func SignOut(w http.ResponseWriter, r *http.Request) {
+	tokenSignIn = ""
+	http.Redirect(w, r, "/signin", http.StatusSeeOther)
 }
 
 func main() {
